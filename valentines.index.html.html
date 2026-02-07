@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valentine?</title>
+  <style>
+    body {
+      font-family: "Comic Sans MS", Arial, sans-serif;
+      background: linear-gradient(135deg, #ffd6e8, #ffb3c6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .box {
+      background: white;
+      padding: 40px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: pop 1s ease;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    h1 {
+      color: #ff4d6d;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 12px 28px;
+      margin: 20px;
+      border-radius: 12px;
+      border: none;
+    }
+
+    #yes {
+      background: #ff4d6d;
+      color: white;
+    }
+
+    #no {
+      background: #ddd;
+      position: absolute;
+    }
+
+    .heart {
+      position: fixed;
+      bottom: -50px;
+      font-size: 24px;
+      animation: floatUp 5s linear infinite;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-100vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>💖 Will you be my Valentine? 💖</h1>
+  <p>(There is only one correct answer 😏)</p>
+  <button id="yes" onclick="yesClick()">Yes 💕</button>
+  <button id="no">No 😒</button>
+</div>
+
+<script>
+  const noBtn = document.getElementById("no");
+
+  function moveButton() {
+    const x = Math.random() * (window.innerWidth - 120);
+    const y = Math.random() * (window.innerHeight - 60);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
+
+  // Mobile + desktop
+  noBtn.addEventListener("touchstart", moveButton);
+  noBtn.addEventListener("pointerdown", moveButton);
+  noBtn.addEventListener("mouseover", moveButton);
+
+  function yesClick() {
+    document.body.innerHTML = `
+      <h1 style="color:#ff4d6d;text-align:center;">
+        💘 YAYYYY 💘<br>
+        You are officially my Valentine 😍<br><br>
+        See you on 14th Feb! 🍝🥂
+      </h1>
+    `;
+  }
+
+  // floating hearts
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerText = "💗";
+    heart.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 5000);
+  }, 500);
+</script>
+
+</body>
+</html>
