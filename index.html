@@ -9,7 +9,7 @@
       background: linear-gradient(135deg, #ffd6e8, #ffb3c6);
       margin: 0;
       min-height: 100vh;
-      overfloor: hidden;
+      overflow: hidden;
       
       display: flex;
       justify-content: center;
@@ -26,6 +26,15 @@
       animation: pop 0.8s ease;
 
       width: min(94vw, 620px);
+    }
+
+    .photo {
+    width: 100%;
+    max-height: 180px;          
+    object-fit: cover;
+    object-position: center 30%;
+    border-radius: 20px;
+    margin-bottom: 18px;
     }
 
     @keyframes pop {
@@ -119,6 +128,7 @@
 
 </body>
 </html>
+
 
 
 
