@@ -1,143 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Valentine?</title>
+
   <style>
-    body {
+    :root{
+      --pink1:#ffd6e8;
+      --pink2:#ffb3c6;
+      --accent:#ff4d6d;
+      --shadow: rgba(0,0,0,0.22);
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      overflow:hidden;
       font-family: "Comic Sans MS", Arial, sans-serif;
-      background: linear-gradient(135deg, #ffd6e8, #ffb3c6);
-      margin: 0;
-      min-height: 100vh;
-      overflow: hidden;
-      
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px 12px;
+      background: linear-gradient(135deg, var(--pink1), var(--pink2));
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      padding: 18px 14px;
     }
 
-    .box { 
-      background: white;
-      padding: 32px 26px;
-      border-radius: 28px;
-      text-align: center;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.25);
-      animation: pop 0.8s ease;
-
-      width: min(94vw, 620px);
+    .box{
+      width: min(94vw, 560px);
+      background:#fff;
+      border-radius: 26px;
+      padding: 26px 18px;
+      text-align:center;
+      box-shadow: 0 18px 40px var(--shadow);
+      animation: pop .65s ease;
     }
 
-.photo {
-  width: 100%;
-  max-width: 420px;      
-  height: auto;         
-  max-height: 220px;    
-  object-fit: contain;  
-  border-radius: 18px;
-  margin: 0 auto 18px;   
-  display: block;
-}
-
+    @keyframes pop{
+      from{ transform: scale(.92); opacity:0; }
+      to{ transform: scale(1); opacity:1; }
     }
 
-    @keyframes pop {
-      from { transform: scale(0.5); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    h1{
+      color: var(--accent);
+      font-size: clamp(26px, 5.5vw, 40px);
+      margin: 12px 0 8px;
+      line-height: 1.15;
     }
 
-    h1 {
-      color: #ff4d6d;
+    p{
+      margin: 0 0 18px;
+      font-size: clamp(14px, 3.8vw, 18px);
+      color:#333;
     }
 
-    button {
+    /* Photo: proportional, NO cropping */
+    .photo{
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      max-height: 160px;          /* mobile-friendly size */
+      object-fit: contain;        /* no cropping */
+      border-radius: 18px;
+      display:block;
+      margin: 0 auto 14px;
+      background: rgba(0,0,0,0.03); /* subtle frame */
+      padding: 6px;
+    }
+
+    .btn-row{
+      display:flex;
+      justify-content:center;
+      gap: 14px;
+      position: relative;
+      margin-top: 6px;
+    }
+
+    button{
       font-size: 18px;
-      padding: 14px 34px;
+      padding: 14px 30px;
       border-radius: 16px;
+      border: 0;
+      cursor: pointer;
+      min-width: 120px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+      transition: transform .08s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    #yes {
-      background: #ff4d6d;
-      color: white;
+    button:active{ transform: scale(0.98); }
+
+    #yes{
+      background: var(--accent);
+      color: #fff;
     }
 
-    #no {
-      background: #ddd;
-      position: absolute;
+    /* No button will be positioned by JS so it can "run away" */
+    #no{
+      background: #e6e6e6;
+      color:#333;
+      position: fixed;
+      left: 0;
+      top: 0;
     }
 
-    .heart {
+    /* Floating hearts */
+    .heart{
       position: fixed;
       bottom: -50px;
-      font-size: 24px;
-      animation: floatUp 5s linear infinite;
+      font-size: 22px;
+      animation: floatUp 5s linear forwards;
+      pointer-events:none;
+      opacity: .9;
     }
 
-    @keyframes floatUp {
-      from { transform: translateY(0); opacity: 1; }
-      to { transform: translateY(-100vh); opacity: 0; }
+    @keyframes floatUp{
+      from{ transform: translateY(0); opacity: 1; }
+      to{ transform: translateY(-110vh); opacity: 0; }
+    }
+
+    /* Upscale nicely on tablets/desktops */
+    @media (min-width: 768px){
+      .box{ padding: 34px 26px; }
+      .photo{ max-height: 220px; }
+      button{ font-size: 19px; padding: 14px 34px; }
     }
   </style>
 </head>
+
 <body>
+  <div class="box" id="card">
+    <img id="photo" class="photo" alt="Us">
 
-<div class="box">
+    <h1>💖 Will you be my Valentine? 💖</h1>
+    <p>(There is only one correct answer 😏)</p>
 
-  <img src="github photo 1.jpg" alt="Us" class="photo">
-  
-  <h1>💖 Will you be my Valentine? 💖</h1>
-  <p>(There is only one correct answer 😏)</p>
-  <button id="yes" onclick="yesClick()">Yes 💕</button>
-  <button id="no">No 😒</button>
-</div>
+    <div class="btn-row" id="btnRow">
+      <button id="yes">Yes 💕</button>
+      <button id="no">No 😒</button>
+    </div>
+  </div>
 
-<script>
-  const noBtn = document.getElementById("no");
+  <script>
+    // ✅ Change this to your uploaded filename exactly:
+    const PHOTO_FILENAME = "github photo 1.jpg";
 
-  function moveButton() {
-    const x = Math.random() * (window.innerWidth - 120);
-    const y = Math.random() * (window.innerHeight - 60);
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-  }
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const photo = document.getElementById("photo");
 
-  // Mobile + desktop
-  noBtn.addEventListener("touchstart", moveButton);
-  noBtn.addEventListener("pointerdown", moveButton);
-  noBtn.addEventListener("mouseover", moveButton);
+    // Load photo
+    photo.src = PHOTO_FILENAME;
 
-  function yesClick() {
-    document.body.innerHTML = `
-      <h1 style="color:#ff4d6d;text-align:center;">
-        💘 YAYYYY 💘<br>
-        You are officially my Valentine 😍<br><br>
-        See you on 14th Feb! 🍝🥂
-      </h1>
-    `;
-  }
+    // Place "No" exactly where it appears next to "Yes" initially
+    function placeNoInitially() {
+      const rect = noBtn.getBoundingClientRect();
+      noBtn.style.left = rect.left + "px";
+      noBtn.style.top = rect.top + "px";
+    }
 
-  // floating hearts
-  setInterval(() => {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerText = "💗";
-    heart.style.left = Math.random() * 100 + "vw";
-    document.body.appendChild(heart);
+    // Move No button to a random safe spot
+    function moveNo() {
+      const btnW = noBtn.offsetWidth;
+      const btnH = noBtn.offsetHeight;
 
-    setTimeout(() => {
-      heart.remove();
-    }, 5000);
-  }, 500);
-</script>
+      // Safe padding to avoid iOS browser bars & edges
+      const padTop = 90;
+      const padBottom = 140;
+      const padSide = 14;
 
+      const maxX = window.innerWidth - btnW - padSide;
+      const maxY = window.innerHeight - btnH - padBottom;
+
+      const x = Math.random() * (maxX - padSide) + padSide;
+      const y = Math.random() * (maxY - padTop) + padTop;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    // Mobile + desktop triggers
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); }, { passive:false });
+    noBtn.addEventListener("pointerdown", moveNo);
+    noBtn.addEventListener("mouseover", moveNo);
+
+    // Yes click handler
+    yesBtn.addEventListener("click", () => {
+      document.body.innerHTML = `
+        <div style="
+          min-height:100vh;
+          display:flex;
+          justify-content:center;
+          align-items:center;
+          text-align:center;
+          padding:24px;
+          font-family: Arial, sans-serif;
+          background: linear-gradient(135deg, #ffd6e8, #ffb3c6);
+        ">
+          <div style="
+            background:white;
+            padding:28px 22px;
+            border-radius:26px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+            width: min(92vw, 560px);
+          ">
+            <h1 style="color:#ff4d6d; margin:0 0 10px; font-size: clamp(28px, 6vw, 44px);">
+              💘 YAYYYY 💘
+            </h1>
+            <p style="margin:0; font-size: clamp(16px, 4vw, 20px);">
+              You are officially my Valentine 😍<br><br>
+              See you on 14th Feb! 🍝🥂
+            </p>
+          </div>
+        </div>
+      `;
+    });
+
+    // Hearts (lightweight)
+    setInterval(() => {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = "💗";
+      h.style.left = (Math.random() * 100) + "vw";
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 5200);
+    }, 650);
+
+    window.addEventListener("load", placeNoInitially);
+    window.addEventListener("resize", placeNoInitially);
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
